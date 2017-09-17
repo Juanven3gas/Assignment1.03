@@ -1,9 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "dun_utils.h"
 
-char[21][80] dungeon;
-char[][] room_info;
+
 int main(int argc, char* argv[])
 {
+   gen_dun();
+   place_PC();
+   print_dungeon();
+   
    return 0;
 }
