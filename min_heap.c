@@ -9,16 +9,10 @@ and was found using his github page: https://github.com/robin-thomas/min-heap/bl
 #include <time.h>
 #include "min_heap.h"
 
-#define LCHILD(x) 2 * x + 1
-#define RCHILD(x) 2 * x + 2
-#define PARENT(x) (x - 1) / 2
-
-
-
 /*
     Function to initialize the min heap with size = 0
 */
-minHeap initMinHeap(int size) {
+minHeap initMinHeap(void) {
     minHeap hp ;
     hp.size = 0 ;
     return hp ;
@@ -84,7 +78,7 @@ void buildMinHeap(minHeap *hp, int *arr, int size) {
     Function to insert a node into the min heap, by allocating space for that node in the
     heap and also making sure that the heap property and shape propety are never violated.
 */
-void insertNode(minHeap *hp, int data) {
+void insertNode(minHeap *hp, int data, char x_position, char y_position) {
     if(hp->size) {
         hp->elem = realloc(hp->elem, (hp->size + 1) * sizeof(node)) ;
     } else {
@@ -93,6 +87,8 @@ void insertNode(minHeap *hp, int data) {
 
     node nd ;
     nd.data = data ;
+    nd.x_position = x_position;
+    nd.y_position = y_position;
 
     int i = (hp->size)++ ;
     while(i && nd.data < hp->elem[PARENT(i)].data) {

@@ -9,7 +9,7 @@ int main(int argc, char* argv[])
    place_PC();
    print_dungeon();
    
-   minHeap min = initMinHeap(100);
+   //minHeap min = initMinHeap();
    
    return 0;
 }
