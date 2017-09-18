@@ -17,7 +17,7 @@ typedef struct minHeap {
 } minHeap ;
 
 minHeap initMinHeap(void);
-void buildMinHeap(minHeap *hp, int *arr, int size);
+void buildMinHeap(minHeap *hp, int *arr, char *arr2, char*arr3, int size);
 void insertNode(minHeap *hp, int data, char x_position, char y_position);
 void deleteNode(minHeap *hp);
 void deleteMinHeap(minHeap *hp);

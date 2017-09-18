@@ -52,7 +52,7 @@ void heapify(minHeap *hp, int i) {
     Instead of using insertNode() function n times for total complexity of O(nlogn),
     we can use the buildMinHeap() function to build the heap in O(n) time
 */
-void buildMinHeap(minHeap *hp, int *arr, int size) {
+void buildMinHeap(minHeap *hp, int *arr, char *arr2, char*arr3, int size) {
     int i ;
 
     // Insertion into the heap without violating the shape property
@@ -64,6 +64,8 @@ void buildMinHeap(minHeap *hp, int *arr, int size) {
         }
         node nd ;
         nd.data = arr[i] ;
+        nd.x_position = arr2[i];
+        nd.y_position = arr3[i];
         hp->elem[(hp->size)++] = nd ;
     }
 
