@@ -10,23 +10,27 @@ void add_vertex_to_set(vertex_t vertex);
 void sort_vertex_arr(vertex_t *arr, int size);
 int set_contains_vertex(sptSet_t *set, int x_position, int y_position);
 
+void init_non_tunnel_arr(void);
+void print_non_tunnel_arr(void);
 void init_distances_arr(int *arr, int size);
 void init_positions_arr(int *arr, int* arr2);
 void init_bool_arr(bool *arr, int size);
 int min_distance(int *arr, bool *set, int size);
+int find_index(int *arr, int *arr2, int size, int xpos, int ypos);
 
 int main(int argc, char* argv[])
 {
    gen_dun();
    place_PC();
    print_dungeon();
+   init_non_tunnel_arr();
 
    int array_size = findAllVertices();
    int distances[array_size + 1];
    int x_position[array_size + 1];
    int y_position[array_size + 1];
    bool set[array_size + 1];
-   //int vertex_count;
+   int vertex_count;
    /**
    * Initialize all arrays for dijkstras
    *
@@ -41,40 +45,126 @@ int main(int argc, char* argv[])
    distances[array_size] = 0;
 
    //find the shortes path for all vertices
-   
-   
 
-   for(vertex_count = 0; vertex < (array_size); vertex_count++)
+   for(vertex_count = 0; vertex_count < (array_size); vertex_count++)
    {
        int min_v = min_distance(distances, set, array_size + 1);
-       printf("min vertex found: x: %d, y:%d, distance: %d\n", x_position[min_v], y_position[min_v], distances[min_v]);
+       //printf("min vertex found: x: %d, y:%d, distance: %d\n", x_position[min_v], y_position[min_v], distances[min_v]);
 
        set[min_v] = true;
 
        // Update dist value of the adjacent vertices of the picked vertex.
-
        // Update dist[v] only if is not in sptSet, there is an edge from 
-       // u to v, and total weight of path from src to  v through u is 
-       // smaller than current value of dist[v]
+        // u to v, and total weight of path from src to  v through u is 
+        // smaller than current value of dist[v]
+
+           int x_pos = x_position[min_v];
+           int y_pos = y_position[min_v];
+
+           distances_non_tunnel[x_pos][y_pos] = distances[min_v] % 10;
+
+           if(dungeon[x_pos + 1][y_pos] == '.' || dungeon[x_pos + 1][y_pos] == '#')
+           {
+               int index = find_index(x_position, y_position, array_size + 1, x_pos + 1, y_pos);
+               if(index == -1)
+               {
+                   printf("index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+               }
+
+              if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + 1 < distances[index])
+              {
+                  distances[index] = distances[min_v] + 1;
+                 
+              }
+           }
+           if(dungeon[x_pos][y_pos + 1] == '.' || dungeon[x_pos][y_pos + 1] == '#')
+           {
+               int index = find_index(x_position, y_position, array_size + 1, x_pos, y_pos + 1);
+
+               if(index == -1)
+               {
+                   printf("index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+               }
+
+               if((!set[index]) && (distances[min_v] != INT_MAX) && (distances[min_v] + 1 < distances[index]))
+               {
+                   distances[index] = distances[min_v] + 1;
+                   
+               }
+           }
+           if(dungeon[x_pos - 1][y_pos] == '.' || dungeon[x_pos - 1][y_pos] == '#')
+           {
+               int index = find_index(x_position, y_position, array_size + 1, x_pos - 1, y_pos);
+               if(index == -1)
+               {
+                   printf("index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+               }
+
+               if((!set[index]) && (distances[min_v] != INT_MAX) && (distances[min_v] + 1 < distances[index]))
+               {
+                   distances[index] = distances[min_v] + 1;
+                   
+               }
+           }
+           if(dungeon[x_pos][y_pos - 1] == '.' || dungeon[x_pos - 1][y_pos] == '#')
+           {
+               int index = find_index(x_position, y_position, array_size + 1, x_pos, y_pos - 1);
+               if(index == -1)
+               {
+                   printf("index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+               }
+
+               if((!set[index]) && (distances[min_v] != INT_MAX) && (distances[min_v] + 1 < distances[index]))
+               {
+                   distances[index] = distances[min_v] + 1;
+                   
+               }
+           }
    }
 
-   /*vertex_t vertices[array_size + 1];
-   sptSet_t set;
-
-   init_vertex_array(vertices);
-
-   vertices[array_size].distance = 0;
-   vertices[array_size].x_position = pc_x_position;
-   vertices[array_size].y_position = pc_y_position;
-
-   sort_vertex_arr(vertices, (array_size + 1));
-
-   while(set.size != (array_size + 1))
-   {
-
-   }*/
+   print_non_tunnel_arr();
 
    return 0;
+}
+
+void init_non_tunnel_arr(void)
+{
+    int row, col;
+    for(row = 0; row < dungeon_rows; row++)
+    {
+        for(col = 0; col < dungeon_columns; col++)
+        {
+            distances_non_tunnel[row][col] = 0;
+        }
+    }
+}
+
+void print_non_tunnel_arr(void)
+{
+    int row, col;
+    for(row = 0; row < dungeon_rows; row++)
+    {
+        for(col = 0; col < dungeon_columns; col++)
+        {
+                printf("%d", distances_non_tunnel[row][col]);
+        }
+
+        printf("\n");
+    }
+}
+
+int find_index(int *arr, int *arr2, int size, int xpos, int ypos)
+{
+    int i;
+    for(i = 0; i < size; i++)
+    {
+        if(arr[i] == xpos && arr2[i] == ypos)
+        {
+            return i;
+        }
+    }
+
+    return -1;
 }
 
 int min_distance(int *arr, bool *set, int size)

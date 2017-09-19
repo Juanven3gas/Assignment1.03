@@ -22,6 +22,7 @@ typedef struct sptSet
 
 
 char dungeon[dungeon_rows][dungeon_columns];
+int distances_non_tunnel[dungeon_rows][dungeon_columns];
 int rooms[num_rooms][4];
 int pc_x_position;
 int pc_y_position;
