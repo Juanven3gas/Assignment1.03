@@ -17,6 +17,7 @@ void init_positions_arr(int *arr, int* arr2);
 void init_bool_arr(bool *arr, int size);
 int min_distance(int *arr, bool *set, int size);
 int find_index(int *arr, int *arr2, int size, int xpos, int ypos);
+char int_to_char(int i);
 
 int main(int argc, char* argv[])
 {
@@ -60,15 +61,17 @@ int main(int argc, char* argv[])
 
            int x_pos = x_position[min_v];
            int y_pos = y_position[min_v];
+           char toAdd = int_to_char(distances[min_v] % 10);
 
-           distances_non_tunnel[x_pos][y_pos] = distances[min_v] % 10;
+           distances_non_tunnel[x_pos][y_pos] = toAdd;
 
            if(dungeon[x_pos + 1][y_pos] == '.' || dungeon[x_pos + 1][y_pos] == '#')
            {
                int index = find_index(x_position, y_position, array_size + 1, x_pos + 1, y_pos);
+               
                if(index == -1)
                {
-                   printf("index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+                   printf("line 71 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
                }
 
               if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + 1 < distances[index])
@@ -83,7 +86,7 @@ int main(int argc, char* argv[])
 
                if(index == -1)
                {
-                   printf("index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+                   printf("line 86 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
                }
 
                if((!set[index]) && (distances[min_v] != INT_MAX) && (distances[min_v] + 1 < distances[index]))
@@ -97,7 +100,7 @@ int main(int argc, char* argv[])
                int index = find_index(x_position, y_position, array_size + 1, x_pos - 1, y_pos);
                if(index == -1)
                {
-                   printf("index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+                   printf("line 100 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
                }
 
                if((!set[index]) && (distances[min_v] != INT_MAX) && (distances[min_v] + 1 < distances[index]))
@@ -106,12 +109,13 @@ int main(int argc, char* argv[])
                    
                }
            }
-           if(dungeon[x_pos][y_pos - 1] == '.' || dungeon[x_pos - 1][y_pos] == '#')
+           if(dungeon[x_pos][y_pos - 1] == '.' || dungeon[x_pos][y_pos -1] == '#')
            {
                int index = find_index(x_position, y_position, array_size + 1, x_pos, y_pos - 1);
+               
                if(index == -1)
                {
-                   printf("index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+                   printf("line 114 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
                }
 
                if((!set[index]) && (distances[min_v] != INT_MAX) && (distances[min_v] + 1 < distances[index]))
@@ -121,10 +125,52 @@ int main(int argc, char* argv[])
                }
            }
    }
-
+   
+   distances_non_tunnel[pc_x_position][pc_y_position] = '@';
    print_non_tunnel_arr();
 
    return 0;
+}
+
+char int_to_char(int i)
+{
+    switch (i)
+    {
+        case 0:
+        return '0';
+
+        case 1:
+        return '1';
+
+        case 2:
+        return '2';
+        
+        case 3:
+        return '3';
+        
+        case 4:
+        return '4';
+        
+        case 5:
+        return '5';
+        
+        case 6:
+        return '6';
+        
+        case 7:
+        return '7';
+        
+        case 8:
+        return '8';
+        
+        case 9:
+        return '9';
+        
+        default:
+        return ' ';
+    }
+
+    return ' ';
 }
 
 void init_non_tunnel_arr(void)
@@ -134,7 +180,7 @@ void init_non_tunnel_arr(void)
     {
         for(col = 0; col < dungeon_columns; col++)
         {
-            distances_non_tunnel[row][col] = 0;
+            distances_non_tunnel[row][col] = ' ';
         }
     }
 }
@@ -146,7 +192,7 @@ void print_non_tunnel_arr(void)
     {
         for(col = 0; col < dungeon_columns; col++)
         {
-                printf("%d", distances_non_tunnel[row][col]);
+                printf("%c", distances_non_tunnel[row][col]);
         }
 
         printf("\n");
