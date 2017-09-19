@@ -17,10 +17,13 @@ typedef struct minHeap {
 } minHeap ;
 
 minHeap initMinHeap(void);
+void deleteMinHeap(minHeap *hp);
+int isEmpty(minHeap *hp);
 void buildMinHeap(minHeap *hp, int *arr, char *arr2, char*arr3, int size);
 void insertNode(minHeap *hp, int data, char x_position, char y_position);
-void deleteNode(minHeap *hp);
+node deleteMin(minHeap *hp);
 void deleteMinHeap(minHeap *hp);
+void decreasePriority(int data, )
 void preorderTraversal(minHeap *hp, int i);
 
 #endif

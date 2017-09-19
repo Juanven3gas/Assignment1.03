@@ -18,6 +18,15 @@ minHeap initMinHeap(void) {
     return hp ;
 }
 
+int isEmpty(minHeap *hp)
+{
+    if(! hp->size)
+    {
+        return 1;
+    }
+
+    return 0;
+}
 
 /*
     Function to swap data within two nodes of the min heap using pointers
@@ -64,6 +73,7 @@ void buildMinHeap(minHeap *hp, int *arr, char *arr2, char*arr3, int size) {
         }
         node nd ;
         nd.data = arr[i] ;
+        //printf("data: %d\n", arr[i]);
         nd.x_position = arr2[i];
         nd.y_position = arr3[i];
         hp->elem[(hp->size)++] = nd ;
@@ -107,8 +117,13 @@ void insertNode(minHeap *hp, int data, char x_position, char y_position) {
     and then call heapify function to make sure that the heap property
     is never violated
 */
-void deleteNode(minHeap *hp) {
+node deleteMin(minHeap *hp) {
+    node temp;
     if(hp->size) {
+        
+        temp.data = hp->elem->data;
+        temp.x_position = hp->elem->x_position;
+        temp.y_position = hp->elem->y_position;
         printf("Deleting node %d\n\n", hp->elem[0].data) ;
         hp->elem[0] = hp->elem[--(hp->size)] ;
         hp->elem = realloc(hp->elem, hp->size * sizeof(node)) ;
@@ -117,6 +132,8 @@ void deleteNode(minHeap *hp) {
         printf("\nMin Heap is empty!\n") ;
         free(hp->elem) ;
     }
+
+    return temp;
 }
 
 
