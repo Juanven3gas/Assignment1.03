@@ -47,7 +47,7 @@ int main(int argc, char* argv[])
 
    //find the shortes path for all vertices
 
-   for(vertex_count = 0; vertex_count < (array_size); vertex_count++)
+   for(vertex_count = 0; vertex_count < (array_size + 1); vertex_count++)
    {
        int min_v = min_distance(distances, set, array_size + 1);
        //printf("min vertex found: x: %d, y:%d, distance: %d\n", x_position[min_v], y_position[min_v], distances[min_v]);
@@ -123,6 +123,66 @@ int main(int argc, char* argv[])
                    distances[index] = distances[min_v] + 1;
                    
                }
+           }
+           if(dungeon[x_pos + 1][y_pos + 1] == '.' || dungeon[x_pos + 1][y_pos + 1] == '#')
+           {
+               int index = find_index(x_position, y_position, array_size + 1, x_pos + 1, y_pos +1);
+               
+               if(index == -1)
+               {
+                   printf("line 133 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+               }
+
+              if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + 1 < distances[index])
+              {
+                  distances[index] = distances[min_v] + 1;
+                 
+              }
+           }
+           if(dungeon[x_pos + 1][y_pos - 1] == '.' || dungeon[x_pos + 1][y_pos -1 ] == '#')
+           {
+               int index = find_index(x_position, y_position, array_size + 1, x_pos + 1, y_pos -1);
+               
+               if(index == -1)
+               {
+                   printf("line 148 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+               }
+
+              if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + 1 < distances[index])
+              {
+                  distances[index] = distances[min_v] + 1;
+                 
+              }
+           }
+           if(dungeon[x_pos - 1][y_pos + 1] == '.' || dungeon[x_pos - 1][y_pos + 1] == '#')
+           {
+               int index = find_index(x_position, y_position, array_size + 1, x_pos - 1, y_pos + 1);
+               
+               if(index == -1)
+               {
+                   printf("line 163 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+               }
+
+              if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + 1 < distances[index])
+              {
+                  distances[index] = distances[min_v] + 1;
+                 
+              }
+           }
+           if(dungeon[x_pos - 1][y_pos - 1] == '.' || dungeon[x_pos - 1][y_pos - 1] == '#')
+           {
+               int index = find_index(x_position, y_position, array_size + 1, x_pos - 1, y_pos - 1);
+               
+               if(index == -1)
+               {
+                   printf("line 178 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+               }
+
+              if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + 1 < distances[index])
+              {
+                  distances[index] = distances[min_v] + 1;
+                 
+              }
            }
    }
    
