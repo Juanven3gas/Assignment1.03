@@ -10,8 +10,34 @@ void add_corridors(void);
 void init_dungeon(void);
 void print_dungeon(void);
 void palce_PC(void);
-int get_pc_x_position();
-int get_pc_y_position();
+int get_pc_x_position(void);
+int get_pc_y_position(void);
+void init_hardness(void);
+
+void init_hardness(void)
+{
+    srand(time(NULL));
+
+    int rows, cols;
+
+    for(rows = 0; rows < dungeon_rows; rows++)
+    {
+        for(cols = 0; cols < dungeon_columns; cols++)
+        {
+            //if we get to a point where it is a wall, corridor, or something edge then hardness is 0
+            //else it is a random hardness from 1-255
+            if(dungeon[rows][cols] == '.' || dungeon[rows][cols] == '#' || dungeon[rows][cols] == '|' || dungeon[rows][cols] == '-')
+            {
+                hardness[rows][cols] = 0;
+            }
+            else
+            {
+                int hard = (rand() % 254) + 1;
+                hardness[rows][cols] = hard;
+            }
+        }
+    }
+}
 
 void place_PC(void)
 {
@@ -48,6 +74,7 @@ int gen_dun(void)
     init_dungeon();
     add_rooms();
     add_corridors();
+    init_hardness();
     //print_dungeon();
 
     return 0;

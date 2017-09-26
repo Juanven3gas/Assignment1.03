@@ -11,6 +11,7 @@ void sort_vertex_arr(vertex_t *arr, int size);
 int set_contains_vertex(sptSet_t *set, int x_position, int y_position);
 
 void init_non_tunnel_arr(void);
+void init_tunnel_arr(void);
 void print_non_tunnel_arr(void);
 void init_distances_arr(int *arr, int size);
 void init_positions_arr(int *arr, int* arr2);
@@ -25,6 +26,7 @@ int main(int argc, char* argv[])
    place_PC();
    print_dungeon();
    init_non_tunnel_arr();
+   init_tunnel_arr();
 
    int array_size = findAllVertices();
    int distances[array_size + 1];
@@ -45,7 +47,7 @@ int main(int argc, char* argv[])
    y_position[array_size] = pc_y_position;
    distances[array_size] = 0;
 
-   //find the shortes path for all vertices
+   //find the shortes path for non tunneling monsters
 
    for(vertex_count = 0; vertex_count < (array_size + 1); vertex_count++)
    {
@@ -189,8 +191,30 @@ int main(int argc, char* argv[])
    distances_non_tunnel[pc_x_position][pc_y_position] = '@';
    print_non_tunnel_arr();
 
+   int tunnel_distances[dungeon_rows * dungeon_columns];
+   int tunnel_x_position[dungeon_rows * dungeon_columns];
+   int tunnel_y_position[dungeon_rows * dungeon_columns];
+   bool tunnel_set[dungeon_rows * dungeon_columns];
+
+   init_distances_arr(tunnel_distances, (dungeon_columns * dungeon_rows) - 1);
+   //init_positions_arr(tunnel_x_position, tunnel_y_position);
+   init_bool_arr(tunnel_set, (dungeon_columns * dungeon_rows));
+
+   distances_tunnel[(dungeon_columns * dungeon_rows) - 1] = 0;
+
+
+   //find shortest path for tunneling monsters
+   for(vertex_count = 0; vertex_count < (dungeon_rows * dungeon_columns); vertex_count++)
+   {
+       int min = min_distance(distances_tunnel, tunnel_set, (dungeon_rows * dungeon_columns));
+
+       set[min] = true;
+
+       
+   }
    return 0;
 }
+
 
 char int_to_char(int i)
 {
@@ -231,6 +255,18 @@ char int_to_char(int i)
     }
 
     return ' ';
+}
+
+void init_tunnel_arr(void)
+{
+    int rows, cols;
+    for(rows = 0; rows < dungeon_rows; rows++)
+    {
+        for(cols = 0; cols < dungeon_columns; cols++)
+        {
+            distances_tunnel[rows][cols] = ' ';
+        }
+    }
 }
 
 void init_non_tunnel_arr(void)
