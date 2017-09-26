@@ -1,0 +1,3 @@
+Path finding assignment. This project will display 3 maps on the console. A map with the PC in a random room in the map,
+the distances from the PC to the other rooms and corridors, and the last map which is the distance from the PC to the 
+rest of the map. NOTE that the las map does not take into consideration of the outermost rows and columns (the rows & columns that have the border characters). 
