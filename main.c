@@ -10,15 +10,22 @@ void add_vertex_to_set(vertex_t vertex);
 void sort_vertex_arr(vertex_t *arr, int size);
 int set_contains_vertex(sptSet_t *set, int x_position, int y_position);
 
+//For non tunneling monsters
 void init_non_tunnel_arr(void);
-void init_tunnel_arr(void);
 void print_non_tunnel_arr(void);
 void init_distances_arr(int *arr, int size);
 void init_positions_arr(int *arr, int* arr2);
 void init_bool_arr(bool *arr, int size);
+
+//For tunneling monsters
+void init_tunnel_arr(void);
+void init_tunnel_positions(int* arr1, int*arr2);
+
+//for djikstra's
+char int_to_char(int i);
 int min_distance(int *arr, bool *set, int size);
 int find_index(int *arr, int *arr2, int size, int xpos, int ypos);
-char int_to_char(int i);
+
 
 int main(int argc, char* argv[])
 {
@@ -191,30 +198,238 @@ int main(int argc, char* argv[])
    distances_non_tunnel[pc_x_position][pc_y_position] = '@';
    print_non_tunnel_arr();
 
-   int tunnel_distances[dungeon_rows * dungeon_columns];
-   int tunnel_x_position[dungeon_rows * dungeon_columns];
-   int tunnel_y_position[dungeon_rows * dungeon_columns];
-   bool tunnel_set[dungeon_rows * dungeon_columns];
+   //begin djisktras for tunneling monsters
+   //does everything except for the outermost row & column
+   array_size = (dungeon_rows -1) * (dungeon_columns - 1);
+   int tunnel_distances[array_size];
+   int tunnel_x_position[array_size];
+   int tunnel_y_position[array_size];
+   bool tunnel_set[array_size];
 
-   init_distances_arr(tunnel_distances, (dungeon_columns * dungeon_rows) - 1);
-   //init_positions_arr(tunnel_x_position, tunnel_y_position);
-   init_bool_arr(tunnel_set, (dungeon_columns * dungeon_rows));
+   init_distances_arr(tunnel_distances, array_size - 1);
+   init_tunnel_positions(tunnel_x_position, tunnel_y_position);
+   init_bool_arr(tunnel_set, array_size);
 
-   distances_tunnel[(dungeon_columns * dungeon_rows) - 1] = 0;
-
+   tunnel_distances[array_size -  1] = 0;
+   tunnel_x_position[array_size - 1] = pc_x_position;
+   tunnel_y_position[array_size - 1] = pc_y_position; 
 
    //find shortest path for tunneling monsters
-   for(vertex_count = 0; vertex_count < (dungeon_rows * dungeon_columns); vertex_count++)
+   for(vertex_count = 0; vertex_count < array_size; vertex_count++)
    {
-       int min = min_distance(distances_tunnel, tunnel_set, (dungeon_rows * dungeon_columns));
+       int min_v = min_distance(tunnel_distances, tunnel_set, array_size);
 
-       set[min] = true;
+       set[min_v] = true;
 
-       
+       int x_pos = x_position[min_v];
+       int y_pos = y_position[min_v];
+       char toAdd = int_to_char(tunnel_distances[min_v] % 10);
+       int index;
+       int weight;
+
+       distances_tunnel[x_pos][y_pos] = toAdd;
+
+       //Check below
+       index = find_index(x_position, y_position, array_size, x_pos + 1, y_pos);
+
+       if(index == -1)
+       {
+           printf("line 236 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+       }
+
+       weight = hardness[x_pos+1][y_pos];
+       if(weight == 0)
+       {
+           weight = 1;
+       }
+       else
+       {
+           weight = weight / 85;
+       }
+
+      if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + weight < distances[index])
+      {
+          distances[index] = distances[min_v] + weight;
+      }
+      
+      //check to the right
+    index = find_index(x_position, y_position, array_size, x_pos, y_pos + 1);
+      
+    if(index == -1)
+    {
+        printf("line 260 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+    }
+      
+    weight = hardness[x_pos][y_pos + 1];
+    if(weight == 0)
+    {
+        weight = 1;
+    }else
+    {
+        weight = weight / 85;
+    }
+      
+    if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + weight < distances[index])
+    {
+        distances[index] = distances[min_v] + weight;
+    }
+
+    //check above
+    index = find_index(x_position, y_position, array_size, x_pos - 1, y_pos);
+        
+    if(index == -1)
+    {
+        printf("line 279 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+    }
+        
+    weight = hardness[x_pos -1][y_pos];
+    if(weight == 0)
+    {
+        weight = 1;
+    }else
+    {
+        weight = weight / 85;
+    }
+        
+    if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + weight < distances[index])
+    {
+        distances[index] = distances[min_v] + weight;
+    }
+
+    //check to the left
+    index = find_index(x_position, y_position, array_size, x_pos, y_pos - 1);
+  
+    if(index == -1)
+    {
+        printf("line 305 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+    }
+    
+    weight = hardness[x_pos][y_pos - 1];
+    if(weight == 0)
+    {
+        weight = 1;
+    }else
+    {
+        weight = weight / 85;
+    }
+  
+    if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + weight < distances[index])
+    {
+        distances[index] = distances[min_v] + weight;
+    }
+
+    //check to the lower right
+    index = find_index(x_position, y_position, array_size, x_pos + 1, y_pos + 1);
+    
+        if(index == -1)
+        {
+            printf("line 305 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+        }
+        
+        weight = hardness[x_pos + 1][y_pos + 1];
+        if(weight == 0)
+        {
+            weight = 1;
+        }else
+        {
+            weight = weight / 85;
+        }
+    
+        if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + weight < distances[index])
+        {
+            distances[index] = distances[min_v] + weight;
+        }
+
+            //check to the upper right
+    index = find_index(x_position, y_position, array_size, x_pos - 1, y_pos + 1);
+        
+            if(index == -1)
+            {
+                printf("line 305 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+            }
+            
+            weight = hardness[x_pos - 1][y_pos + 1];
+            if(weight == 0)
+            {
+                weight = 1;
+            }else
+            {
+                weight = weight / 85;
+            }
+        
+            if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + weight < distances[index])
+            {
+                distances[index] = distances[min_v] + weight;
+            }
+
+            //check to the lower left
+    index = find_index(x_position, y_position, array_size, x_pos + 1, y_pos - 1);
+        
+            if(index == -1)
+            {
+                printf("line 305 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+            }
+            
+            weight = hardness[x_pos + 1][y_pos - 1];
+            if(weight == 0)
+            {
+                weight = 1;
+            }else
+            {
+                weight = weight / 85;
+            }
+        
+            if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + weight < distances[index])
+            {
+                distances[index] = distances[min_v] + weight;
+            }
+
+            //check to the upper left
+    index = find_index(x_position, y_position, array_size, x_pos - 1, y_pos - 1);
+        
+            if(index == -1)
+            {
+                printf("line 305 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+            }
+            
+            weight = hardness[x_pos - 1][y_pos - 1];
+            if(weight == 0)
+            {
+                weight = 1;
+            }else
+            {
+                weight = weight / 85;
+            }
+        
+            if(!set[index] && distances[min_v] != INT_MAX && distances[min_v] + weight < distances[index])
+            {
+                distances[index] = distances[min_v] + weight;
+            }
+
    }
+
+   //print the tunneling monsters array
+   
    return 0;
 }
 
+void init_tunnel_positions(int *arr1, int* arr2)
+{
+    int rows, cols;
+    int arr_index;
+    for(rows = 1; rows < dungeon_rows; rows++)
+    {
+        for(cols = 1; cols < dungeon_columns; cols++)
+        {
+            if(dungeon[rows][cols] != '@')
+            {
+            arr1[arr_index] = rows;
+            arr2[arr_index] = cols;
+            arr_index++;
+            }
+        }
+    }
+}
 
 char int_to_char(int i)
 {
