@@ -219,7 +219,7 @@ int main(int argc, char* argv[])
    //init_all_arrs(tunnel_x_position, tunnel_y_position, tunnel_distances, tunnel_set);
 
    //find shortest path for tunneling monsters
-   for(vertex_count = 0; vertex_count < 100; vertex_count++)
+   for(vertex_count = 0; vertex_count < (array_size); vertex_count++)
    {
        int min_v = min_distance(tunnel_distances, tunnel_set, array_size);
        tunnel_set[min_v] = true;
@@ -232,67 +232,48 @@ int main(int argc, char* argv[])
 
        distances_tunnel[x_pos][y_pos] = toAdd;
 
-       //Check below
-       index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos + 1, y_pos);
-
-       if(index == -1)
+       //Check below if possible
+       if(x_pos + 1 < 20)
        {
-           printf("line 238 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
-           break;
+        index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos + 1, y_pos);
+        
+               if(index == -1)
+               {
+                   printf("line 238 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
+                   break;
+               }
+        
+               weight = hardness[x_pos+1][y_pos];
+        
+               if(weight == 0)
+               {
+                   weight = 1;
+               }
+               else
+               {
+                   weight = weight / 85;
+               }
+        
+              if((!tunnel_set[index]) && (tunnel_distances[min_v] != INT_MAX) && (tunnel_distances[min_v] + weight < tunnel_distances[index]))
+              {
+                tunnel_distances[index] = tunnel_distances[min_v] + weight;
+                //printf("new ditance for %d, %d is %d\n", x_pos + 1, y_pos, tunnel_distances[index]);
+              }    
        }
+       
 
-       weight = hardness[x_pos+1][y_pos];
-
-       if(weight == 0)
-       {
-           weight = 1;
-       }
-       else
-       {
-           weight = weight / 85;
-       }
-
-      if((!tunnel_set[index]) && (tunnel_distances[min_v] != INT_MAX) && (tunnel_distances[min_v] + weight < tunnel_distances[index]))
+      //check above if possible
+      if(x_pos - 1 > 0)
       {
-        tunnel_distances[index] = tunnel_distances[min_v] + weight;
-        //printf("new ditance for %d, %d is %d\n", x_pos + 1, y_pos, tunnel_distances[index]);
-      }
-
-      //check above
-      index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos - 1, y_pos);
-      
-        if(index == -1)
-        {
-            printf("line 266 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
-            break;
-        }
-      
-         weight = hardness[x_pos - 1][y_pos];
-        if(weight == 0)
-        {
-            weight = 1;
-        }
-        else
-        {
-            weight = weight / 85;
-        }
-      
-        if((!tunnel_set[index]) && (tunnel_distances[min_v] != INT_MAX) && (tunnel_distances[min_v] + weight < tunnel_distances[index]))
-        {
-           tunnel_distances[index] = tunnel_distances[min_v] + weight;
-            //printf("new ditance for %d, %d is %d\n", x_pos - 1, y_pos, tunnel_distances[index]);
-        }
-
-        //check left
-        index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos, y_pos - 1);
+        index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos - 1, y_pos);
         
           if(index == -1)
           {
-              printf("line 291 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
+              printf("line 266 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
               break;
           }
         
-           weight = hardness[x_pos][y_pos - 1];
+           weight = hardness[x_pos - 1][y_pos];
           if(weight == 0)
           {
               weight = 1;
@@ -305,39 +286,187 @@ int main(int argc, char* argv[])
           if((!tunnel_set[index]) && (tunnel_distances[min_v] != INT_MAX) && (tunnel_distances[min_v] + weight < tunnel_distances[index]))
           {
              tunnel_distances[index] = tunnel_distances[min_v] + weight;
-              //printf("new ditance for %d, %d is %d\n", x_pos, y_pos - 1, tunnel_distances[index]);
+              //printf("new ditance for %d, %d is %d\n", x_pos - 1, y_pos, tunnel_distances[index]);
+          }
+      }
+      
+
+      //check left if possible 
+      if(y_pos - 1 > 0)
+      {
+            index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos, y_pos - 1);
+            
+              if(index == -1)
+              {
+                  printf("line 291 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
+                  break;
+              }
+            
+               weight = hardness[x_pos][y_pos - 1];
+              if(weight == 0)
+              {
+                  weight = 1;
+              }
+              else
+              {
+                  weight = weight / 85;
+              }
+            
+              if((!tunnel_set[index]) && (tunnel_distances[min_v] != INT_MAX) && (tunnel_distances[min_v] + weight < tunnel_distances[index]))
+              {
+                 tunnel_distances[index] = tunnel_distances[min_v] + weight;
+                  //printf("new ditance for %d, %d is %d\n", x_pos, y_pos - 1, tunnel_distances[index]);
+              }
+    
+      }
+        
+      //check right if possible
+      if(y_pos + 1 < 79)
+      {
+
+            index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos, y_pos + 1);
+            
+              if(index == -1)
+              {
+                  printf("line 316 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
+                  break;
+              }
+  
+              weight = hardness[x_pos][y_pos + 1];
+              if(weight == 0)
+              {
+                  weight = 1;
+              }
+              else
+              {
+                  weight = weight / 85;
+              }
+            
+              if((!tunnel_set[index]) && (tunnel_distances[min_v] != INT_MAX) && (tunnel_distances[min_v] + weight < tunnel_distances[index]))
+              {
+                 tunnel_distances[index] = tunnel_distances[min_v] + weight;
+                  //printf("new ditance for %d, %d is %d\n", x_pos, y_pos+1, tunnel_distances[index]);
+              }
+      }
+
+      //check upper right if possible
+      if(x_pos - 1 > 0 && y_pos + 1< 79)
+      {
+        index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos - 1, y_pos + 1);
+        
+          if(index == -1)
+          {
+              printf("line 358 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
+              break;
           }
 
-          //check right
-          index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos, y_pos + 1);
-          
-            if(index == -1)
-            {
-                printf("line 316 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
-                break;
-            }
+          weight = hardness[x_pos - 1][y_pos + 1];
+          if(weight == 0)
+          {
+              weight = 1;
+          }
+          else
+          {
+              weight = weight / 85;
+          }
+        
+          if((!tunnel_set[index]) && (tunnel_distances[min_v] != INT_MAX) && (tunnel_distances[min_v] + weight < tunnel_distances[index]))
+          {
+             tunnel_distances[index] = tunnel_distances[min_v] + weight;
+              //printf("new ditance for %d, %d is %d\n", x_pos, y_pos+1, tunnel_distances[index]);
+          }
+      }
 
-             weight = hardness[x_pos][y_pos + 1];
-            if(weight == 0)
-            {
-                weight = 1;
-            }
-            else
-            {
-                weight = weight / 85;
-            }
-          
-            if((!tunnel_set[index]) && (tunnel_distances[min_v] != INT_MAX) && (tunnel_distances[min_v] + weight < tunnel_distances[index]))
-            {
-               tunnel_distances[index] = tunnel_distances[min_v] + weight;
-                //printf("new ditance for %d, %d is %d\n", x_pos, y_pos+1, tunnel_distances[index]);
-            }
+      //CHeck upper left if possible
+      if(x_pos - 1 > 0 && y_pos - 1 < 0)
+      {
+        index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos - 1, y_pos - 1);
+        
+          if(index == -1)
+          {
+              printf("line 316 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
+              break;
+          }
+
+          weight = hardness[x_pos - 1][y_pos - 1];
+          if(weight == 0)
+          {
+              weight = 1;
+          }
+          else
+          {
+              weight = weight / 85;
+          }
+        
+          if((!tunnel_set[index]) && (tunnel_distances[min_v] != INT_MAX) && (tunnel_distances[min_v] + weight < tunnel_distances[index]))
+          {
+             tunnel_distances[index] = tunnel_distances[min_v] + weight;
+              //printf("new ditance for %d, %d is %d\n", x_pos, y_pos+1, tunnel_distances[index]);
+          }
+      }
+      
+      //Check lower right if possible
+      if(x_pos + 1 < 20 && y_pos + 1 < 79)
+      {
+        index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos + 1, y_pos + 1);
+        
+          if(index == -1)
+          {
+              printf("line 316 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
+              break;
+          }
+
+          weight = hardness[x_pos + 1][y_pos + 1];
+          if(weight == 0)
+          {
+              weight = 1;
+          }
+          else
+          {
+              weight = weight / 85;
+          }
+        
+          if((!tunnel_set[index]) && (tunnel_distances[min_v] != INT_MAX) && (tunnel_distances[min_v] + weight < tunnel_distances[index]))
+          {
+             tunnel_distances[index] = tunnel_distances[min_v] + weight;
+              //printf("new ditance for %d, %d is %d\n", x_pos, y_pos+1, tunnel_distances[index]);
+          }
+      }
+
+      //Check lower left if possible
+      if(x_pos + 1  > 0 && y_pos - 1 < 0)
+      {
+        index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos + 1, y_pos + 1);
+        
+          if(index == -1)
+          {
+              printf("line 316 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
+              break;
+          }
+
+          weight = hardness[x_pos + 1][y_pos + 1];
+          if(weight == 0)
+          {
+              weight = 1;
+          }
+          else
+          {
+              weight = weight / 85;
+          }
+        
+          if((!tunnel_set[index]) && (tunnel_distances[min_v] != INT_MAX) && (tunnel_distances[min_v] + weight < tunnel_distances[index]))
+          {
+             tunnel_distances[index] = tunnel_distances[min_v] + weight;
+              //printf("new ditance for %d, %d is %d\n", x_pos, y_pos+1, tunnel_distances[index]);
+          }
+      }
+        
    }
 
    //print the tunneling monsters array
    distances_tunnel[pc_x_position][pc_y_position] = '@';
    print_tunnel_arr();
-
+   //printf("INT_MAX mod 10 = %d", INT_MAX % 10);
    return 0;
 }
 
