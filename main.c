@@ -20,6 +20,7 @@ void init_bool_arr(bool *arr, int size);
 //For tunneling monsters
 void init_tunnel_arr(void);
 void init_tunnel_positions(int* arr1, int*arr2);
+void print_tunnel_arr(void);
 
 //for djikstra's
 char int_to_char(int i);
@@ -199,8 +200,8 @@ int main(int argc, char* argv[])
    print_non_tunnel_arr();
 
    //begin djisktras for tunneling monsters
-   //does everything except for the outermost row & column
-   array_size = (dungeon_rows -1) * (dungeon_columns - 1);
+   //does everything except for the outtermost row & column
+   array_size = (dungeon_rows -2) * (dungeon_columns - 2);
    int tunnel_distances[array_size];
    int tunnel_x_position[array_size];
    int tunnel_y_position[array_size];
@@ -221,8 +222,8 @@ int main(int argc, char* argv[])
 
        set[min_v] = true;
 
-       int x_pos = x_position[min_v];
-       int y_pos = y_position[min_v];
+       int x_pos = tunnel_x_position[min_v];
+       int y_pos = tunnel_y_position[min_v];
        char toAdd = int_to_char(tunnel_distances[min_v] % 10);
        int index;
        int weight;
@@ -230,11 +231,11 @@ int main(int argc, char* argv[])
        distances_tunnel[x_pos][y_pos] = toAdd;
 
        //Check below
-       index = find_index(x_position, y_position, array_size, x_pos + 1, y_pos);
+       index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos + 1, y_pos);
 
        if(index == -1)
        {
-           printf("line 236 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+           printf("line 236 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
        }
 
        weight = hardness[x_pos+1][y_pos];
@@ -253,11 +254,11 @@ int main(int argc, char* argv[])
       }
       
       //check to the right
-    index = find_index(x_position, y_position, array_size, x_pos, y_pos + 1);
+    index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos, y_pos + 1);
       
     if(index == -1)
     {
-        printf("line 260 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+        printf("line 260 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
     }
       
     weight = hardness[x_pos][y_pos + 1];
@@ -275,11 +276,11 @@ int main(int argc, char* argv[])
     }
 
     //check above
-    index = find_index(x_position, y_position, array_size, x_pos - 1, y_pos);
+    index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos - 1, y_pos);
         
     if(index == -1)
     {
-        printf("line 279 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+        printf("line 279 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
     }
         
     weight = hardness[x_pos -1][y_pos];
@@ -297,11 +298,11 @@ int main(int argc, char* argv[])
     }
 
     //check to the left
-    index = find_index(x_position, y_position, array_size, x_pos, y_pos - 1);
+    index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos, y_pos - 1);
   
     if(index == -1)
     {
-        printf("line 305 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+        printf("line 305 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
     }
     
     weight = hardness[x_pos][y_pos - 1];
@@ -319,11 +320,11 @@ int main(int argc, char* argv[])
     }
 
     //check to the lower right
-    index = find_index(x_position, y_position, array_size, x_pos + 1, y_pos + 1);
+    index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos + 1, y_pos + 1);
     
-        if(index == -1)
+    if(index == -1)
         {
-            printf("line 305 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+            printf("line 305 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
         }
         
         weight = hardness[x_pos + 1][y_pos + 1];
@@ -341,11 +342,11 @@ int main(int argc, char* argv[])
         }
 
             //check to the upper right
-    index = find_index(x_position, y_position, array_size, x_pos - 1, y_pos + 1);
+    index = find_index(tunnel_x_position, y_position, array_size, x_pos - 1, y_pos + 1);
         
             if(index == -1)
             {
-                printf("line 305 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+                printf("line 305 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
             }
             
             weight = hardness[x_pos - 1][y_pos + 1];
@@ -363,11 +364,11 @@ int main(int argc, char* argv[])
             }
 
             //check to the lower left
-    index = find_index(x_position, y_position, array_size, x_pos + 1, y_pos - 1);
+    index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos + 1, y_pos - 1);
         
             if(index == -1)
             {
-                printf("line 305 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+                printf("line 305 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
             }
             
             weight = hardness[x_pos + 1][y_pos - 1];
@@ -385,11 +386,11 @@ int main(int argc, char* argv[])
             }
 
             //check to the upper left
-    index = find_index(x_position, y_position, array_size, x_pos - 1, y_pos - 1);
+            index = find_index(tunnel_x_position, tunnel_y_position, array_size, x_pos - 1, y_pos - 1);
         
             if(index == -1)
             {
-                printf("line 305 index is negative! For xpos: %d ypos:%d\n", x_position[min_v], y_position[min_v]);
+                printf("line 305 index is negative! For xpos: %d ypos:%d\n", tunnel_x_position[min_v], tunnel_y_position[min_v]);
             }
             
             weight = hardness[x_pos - 1][y_pos - 1];
@@ -409,17 +410,32 @@ int main(int argc, char* argv[])
    }
 
    //print the tunneling monsters array
-   
+   print_tunnel_arr();
+
    return 0;
+}
+
+void print_tunnel_arr(void)
+{
+    int rows, cols;
+    for(rows = 0; rows < dungeon_rows; rows++)
+    {
+        for(cols = 0; cols < dungeon_columns; cols++)
+        {
+            printf("%c", distances_tunnel[rows][cols]);
+        }
+
+        printf("\n");
+    }
 }
 
 void init_tunnel_positions(int *arr1, int* arr2)
 {
     int rows, cols;
     int arr_index;
-    for(rows = 1; rows < dungeon_rows; rows++)
+    for(rows = 1; rows < dungeon_rows - 1; rows++)
     {
-        for(cols = 1; cols < dungeon_columns; cols++)
+        for(cols = 1; cols < dungeon_columns - 1; cols++)
         {
             if(dungeon[rows][cols] != '@')
             {
